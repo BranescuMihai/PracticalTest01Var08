@@ -1,6 +1,9 @@
 package ro.pub.cs.systems.eim.practicaltest01var08;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,6 +14,9 @@ public class PracticalTest01Var08MainActivity extends AppCompatActivity {
 
     private Button button;
     private EditText editText1, editText2, editText3, editText4;
+    private PracticalTest01Var08Service practicalTest01Var08Service;
+
+    private IntentFilter intentFilter = new IntentFilter();
 
     public static final String FIRST_VALUE = "FIRST_VALUE";
     public static final String SECOND_VALUE = "SECOND_VALUE";
@@ -38,9 +44,25 @@ public class PracticalTest01Var08MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        unregisterReceiver(myReceiver);
+        stopService(new Intent(this, PracticalTest01Var08Service.class));
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startService(new Intent(this, PracticalTest01Var08Service.class));
+        registerReceiver(myReceiver, intentFilter);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practical_test01_var08_main);
+
+        intentFilter.addAction(PracticalTest01Var08Service.ACTION_BROAD);
 
         button = (Button) findViewById(R.id.button);
         editText1 = (EditText) findViewById(R.id.edit1);
@@ -81,4 +103,16 @@ public class PracticalTest01Var08MainActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
+
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getIntExtra(FIRST_VALUE, 0) != 0) {
+                editText1.setText(String.valueOf(intent.getIntExtra(FIRST_VALUE,0)));
+                editText2.setText(String.valueOf(intent.getIntExtra(SECOND_VALUE,0)));
+                editText3.setText(String.valueOf(intent.getIntExtra(THIRD_VALUE,0)));
+                editText4.setText(String.valueOf(intent.getIntExtra(FORTH_VALUE,0)));
+            }
+        }
+    };
 }

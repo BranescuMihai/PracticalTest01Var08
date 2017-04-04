@@ -16,6 +16,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".PracticalTest01Var08SecondaryActivity" />
+
+        <service
+            android:name="ro.pub.cs.systems.eim.practicaltest01var08.PracticalTest01Var08Service"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>
